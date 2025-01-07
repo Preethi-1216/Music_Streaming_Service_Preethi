@@ -1,0 +1,77 @@
+// frontend/src/components/MusicPlayer.jsx
+import React, { useState, useRef } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { 
+  playPause, 
+  nextTrack, 
+  previousTrack 
+} from '../redux/playerSlice';
+
+const MusicPlayer = () => {
+  const audioRef = useRef(null);
+  const dispatch = useDispatch();
+  const { currentSong, isPlaying } = useSelector(state => state.player);
+  const [volume, setVolume] = useState(1);
+
+  const handlePlayPause = () => {
+    if (isPlaying) {
+      audioRef.current.pause();
+    } else {
+      audioRef.current.play();
+    }
+    dispatch(playPause());
+  };
+
+  const handleVolumeChange = (e) => {
+    const value = e.target.value;
+    setVolume(value);
+    audioRef.current.volume = value;
+  };
+
+  return (
+    <div className="fixed bottom-0 w-full bg-gray-900 p-4">
+      <audio
+        ref={audioRef}
+        src={currentSong?.url}
+        onEnded={() => dispatch(nextTrack())}
+      />
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-4">
+          <img 
+            src={currentSong?.coverImage} 
+            alt="Cover" 
+            className="w-12 h-12 rounded"
+          />
+          <div>
+            <p className="text-white">{currentSong?.title}</p>
+            <p className="text-gray-400">{currentSong?.artist}</p>
+          </div>
+        </div>
+        
+        <div className="flex items-center gap-4">
+          <button onClick={() => dispatch(previousTrack())}>
+            Previous
+          </button>
+          <button onClick={handlePlayPause}>
+            {isPlaying ? 'Pause' : 'Play'}
+          </button>
+          <button onClick={() => dispatch(nextTrack())}>
+            Next
+          </button>
+        </div>
+
+        <input
+          type="range"
+          min="0"
+          max="1"
+          step="0.1"
+          value={volume}
+          onChange={handleVolumeChange}
+          className="w-24"
+        />
+      </div>
+    </div>
+  );
+};
+
+export default MusicPlayer;

@@ -1,0 +1,42 @@
+// backend/src/models/Song.js
+import { Model, DataTypes } from 'sequelize';
+import sequelize from '../config/database';
+
+class Song extends Model {}
+
+Song.init({
+  id: {
+    type: DataTypes.UUID,
+    defaultValue: DataTypes.UUIDV4,
+    primaryKey: true
+  },
+  title: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  artist: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  album: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  duration: {
+    type: DataTypes.INTEGER,
+    allowNull: false
+  },
+  url: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  coverImage: {
+    type: DataTypes.STRING,
+    allowNull: true
+  }
+}, {
+  sequelize,
+  modelName: 'Song'
+});
+
+export default Song;
